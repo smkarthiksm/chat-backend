@@ -5,7 +5,17 @@ class UserController {
       const response = await new UserDelegate().signup(req.body);
       return res.send(response);
     }
-    catch (err) {      
+    catch (err) {
+      next(err);
+    }
+  }
+
+  async login(req, res, next) {
+    try {
+      const response = await new UserDelegate().login(req.body);
+      return res.send(response);
+    }
+    catch (err) {
       next(err);
     }
   }
