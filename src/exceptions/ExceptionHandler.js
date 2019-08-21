@@ -1,9 +1,9 @@
 class ExceptionHandler extends Error {
-  constructor(message, status) {
+  constructor(message, statusCode) {
     super();
     this.message = {
       'message': message || 'Something went wrong. Please try again.',
-      'status': status || 500
+      'statusCode': statusCode || 500
     };
   }
 }

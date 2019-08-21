@@ -7,4 +7,4 @@ export const INSERT_PASSWORD = `INSERT INTO ${DatabaseConstants.USER_PASSWORD_TA
 export const FIND_BY_EMAIL = `SELECT * FROM ${DatabaseConstants.USER_TABLE} WHERE ${DatabaseConstants.EMAIL} = ?`;
 export const FIND_BY_EMAIL_AND_PASSWORD = `SELECT * FROM ${DatabaseConstants.USER_TABLE} INNER JOIN ${DatabaseConstants.USER_PASSWORD_TABLE} 
 ON ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.PK_USER} = ${DatabaseConstants.USER_PASSWORD_TABLE}.${DatabaseConstants.FK_USER_USERPASSWORD} 
-AND ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.EMAIL}=? AND ${DatabaseConstants.USER_PASSWORD_TABLE}.${DatabaseConstants.PASSWORD}=?`;
+AND ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.EMAIL}=?`;

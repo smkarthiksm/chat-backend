@@ -1,20 +1,21 @@
 import * as ApplicationConstants from '../constants/ApplicationConstants';
 import ExceptionHandler from '../exceptions/ExceptionHandler';
-import UserDao from '../daos/UserDao';
+import UserManagementDao from '../daos/UserManagementDao';
 import UserModel from '../models/UserModel';
+import * as JWTUtility from '../utilities/JWTUtility';
 import * as Utility from '../utilities/utility';
-class UserDelegate {
+class UserManagementDelegate {
 
   async signup(body) {
     try {
-      const isNewUser = await new UserDelegate().isEmailExist(body.email);
+      const isNewUser = await new UserManagementDelegate().isEmailExist(body.email);
       if (isNewUser) {
         const hashPassword = await Utility.generatePasswordHash(body.password);
         const userModel = new UserModel(body.id, body.firstName, body.lastName, body.email, body.phoneNumber);
-        const response = await new UserDao().signup(userModel);
+        const response = await new UserManagementDao().signup(userModel);
         userModel.id = response;
         userModel.password = hashPassword;
-        await new UserDao().insertPassword(userModel);
+        await new UserManagementDao().insertPassword(userModel);
         delete userModel.password;
         return userModel;
       }
@@ -23,14 +24,12 @@ class UserDelegate {
       }
     }
     catch (err) {
-      console.log(err);
-
       throw new ExceptionHandler(err);
     }
   }
 
   async isEmailExist(email) {
-    const response = await new UserDao().findByEmail(email);
+    const response = await new UserManagementDao().findByEmail(email);
     if (response.length == 0) {
       return true;
     }
@@ -43,17 +42,18 @@ class UserDelegate {
     try {
       const userModel = new UserModel();
       userModel.email = body.email;
-      userModel.password = await Utility.generatePasswordHash(body.password);
-      console.log(userModel.password);
-
-      const response = await new UserDao().login(userModel);
-      if (response.length == 0) {
-        throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, statusCode: ApplicationConstants.NOT_FOUND });
+      const response = await new UserManagementDao().login(userModel);
+      if (response.length > 0) {
+        if (await Utility.comparePasswordHash(body.password, response[0].password)) {
+          return JWTUtility.generateJWT({ "email": userModel.email });
+        }
+        else {
+          throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, statusCode: ApplicationConstants.NOT_FOUND });
+        }
       }
       else {
-        return response[0];
+        throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, statusCode: ApplicationConstants.NOT_FOUND });
       }
-
     }
     catch (err) {
       throw new ExceptionHandler(err.message, err.statusCode);
@@ -62,4 +62,4 @@ class UserDelegate {
 
 }
 
-export default UserDelegate;
+export default UserManagementDelegate;

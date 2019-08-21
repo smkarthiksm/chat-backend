@@ -1,6 +1,6 @@
 import DB from '../database/DatabaseWrapper';
 import * as QueryConstants from '../constants/QueryConstants';
-class UserDao {
+class UserManagementDao {
 
   async findByEmail(email) {
     const [rows] = await DB.query(QueryConstants.FIND_BY_EMAIL, [email])
@@ -28,9 +28,9 @@ class UserDao {
     return rows.insertId;
   }
 
-  async login(userModel) {
+  async login(userModel) {    
     const [rows] = await DB.query(QueryConstants.FIND_BY_EMAIL_AND_PASSWORD,
-      [userModel.email, userModel.password])
+      [userModel.email])
       .catch(err => {
         throw err;
       });
@@ -38,4 +38,4 @@ class UserDao {
   }
 
 }
-export default UserDao;
+export default UserManagementDao;
