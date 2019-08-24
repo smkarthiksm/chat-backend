@@ -1,11 +1,11 @@
 import express from 'express';
 import validate from 'express-validation';
-import Test from '../controllers/Test';
+import UserController from '../controllers/UserController';
 
 import * as Validator from '../validators/UserValidator';
 
 const router = express.Router();
 
-router.post('/one', new Test().signup);
+router.get('/byName', validate(Validator.NameValidator), new UserController().getByName);
 
 export default router;

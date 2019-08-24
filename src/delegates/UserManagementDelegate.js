@@ -48,15 +48,15 @@ class UserManagementDelegate {
           return JWTUtility.generateJWT({ "email": userModel.email });
         }
         else {
-          throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, statusCode: ApplicationConstants.NOT_FOUND });
+          throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, status: ApplicationConstants.NOT_FOUND });
         }
       }
       else {
-        throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, statusCode: ApplicationConstants.NOT_FOUND });
+        throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, status: ApplicationConstants.NOT_FOUND });
       }
     }
     catch (err) {
-      throw new ExceptionHandler(err.message, err.statusCode);
+      throw new ExceptionHandler(err.message, err.status);
     }
   }
 

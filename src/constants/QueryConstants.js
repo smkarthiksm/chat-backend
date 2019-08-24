@@ -8,3 +8,4 @@ export const FIND_BY_EMAIL = `SELECT * FROM ${DatabaseConstants.USER_TABLE} WHER
 export const FIND_BY_EMAIL_AND_PASSWORD = `SELECT * FROM ${DatabaseConstants.USER_TABLE} INNER JOIN ${DatabaseConstants.USER_PASSWORD_TABLE} 
 ON ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.PK_USER} = ${DatabaseConstants.USER_PASSWORD_TABLE}.${DatabaseConstants.FK_USER_USERPASSWORD} 
 AND ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.EMAIL}=?`;
+export const FIND_BY_NAME = `SELECT * FROM ${DatabaseConstants.USER_TABLE} WHERE ${DatabaseConstants.FIRST_NAME} LIKE ? OR ${DatabaseConstants.LAST_NAME} LIKE ? ORDER BY ${DatabaseConstants.FIRST_NAME} ASC`;

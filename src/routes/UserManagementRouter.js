@@ -2,7 +2,7 @@ import express from 'express';
 import validate from 'express-validation';
 import UserManagementController from '../controllers/UserManagementController';
 
-import * as Validator from '../validators/UserValidator';
+import * as Validator from '../validators/UserManagementValidator';
 
 const router = express.Router();
 

@@ -1,10 +1,11 @@
 class ExceptionHandler extends Error {
-  constructor(message, statusCode) {
+  constructor(message, status) {
     super();
     this.message = {
       'message': message || 'Something went wrong. Please try again.',
-      'statusCode': statusCode || 500
+      'status': status || 500
     };
+    this.status = status || 500;
   }
 }
 export default ExceptionHandler;

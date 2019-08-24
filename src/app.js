@@ -21,7 +21,7 @@ app.use(JWTUtility.validateJWT);
 app.use(IndexRouter);
 
 app.use((err, req, res, next) => {
-  res.status(err.message.statusCode).send(err.message);
+  res.status(err.status).send(err.message);
 });
 
 export default app;

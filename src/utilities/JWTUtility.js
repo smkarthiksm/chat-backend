@@ -3,10 +3,7 @@ import jwt from 'jsonwebtoken';
 import * as ApplicationConstants from '../constants/ApplicationConstants';
 import * as secret from '../constants/Secrets';
 
-
 export const generateJWT = (payload) => {
-  console.log(payload);
-
   let token = jwt.sign(payload,
     secret.JWT_SECRET,
     {
