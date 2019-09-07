@@ -12,7 +12,7 @@ export const FIND_BY_EMAIL_AND_PASSWORD = `SELECT * FROM ${DatabaseConstants.USE
 ON ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.PK_USER} = ${DatabaseConstants.USER_PASSWORD_TABLE}.${DatabaseConstants.FK_USER_USERPASSWORD} 
 AND ${DatabaseConstants.USER_TABLE}.${DatabaseConstants.EMAIL}=?`;
 
-export const FIND_BY_NAME = `SELECT * FROM ${DatabaseConstants.USER_TABLE} WHERE (${DatabaseConstants.FIRST_NAME} LIKE ? OR ${DatabaseConstants.LAST_NAME} LIKE ?) AND ${DatabaseConstants.PK_USER} != ? ORDER BY ${DatabaseConstants.FIRST_NAME} ASC`;
+export const FIND_BY_NAME = `SELECT * FROM ${DatabaseConstants.USER_TABLE} WHERE (${DatabaseConstants.FIRST_NAME} LIKE ? OR ${DatabaseConstants.LAST_NAME} LIKE ? OR ${DatabaseConstants.EMAIL} LIKE ?) AND ${DatabaseConstants.ISACTIVE}=1 AND ${DatabaseConstants.PK_USER} != ? ORDER BY ${DatabaseConstants.FIRST_NAME} ASC`;
 
 export const FIND_GROUPS_FOR_USER = `SELECT T2.${DatabaseConstants.FK_CHAT_CREATION_CHAT_MEMBERS_MAPPING} FROM ${DatabaseConstants.CHAT_MEMBERS_MAPPING_TABLE} AS T1 JOIN (SELECT ${DatabaseConstants.FK_CHAT_CREATION_CHAT_MEMBERS_MAPPING} FROM ${DatabaseConstants.CHAT_MEMBERS_MAPPING_TABLE} GROUP BY ${DatabaseConstants.FK_CHAT_CREATION_CHAT_MEMBERS_MAPPING} HAVING COUNT(*)=?) AS T2 ON T1.${DatabaseConstants.FK_CHAT_CREATION_CHAT_MEMBERS_MAPPING} = T2.${DatabaseConstants.FK_CHAT_CREATION_CHAT_MEMBERS_MAPPING} WHERE ${DatabaseConstants.FK_USER_CHAT_MEMBERS_MAPPING} IN ?
  GROUP BY ${DatabaseConstants.FK_CHAT_CREATION_CHAT_MEMBERS_MAPPING} HAVING COUNT(*)=?`;
