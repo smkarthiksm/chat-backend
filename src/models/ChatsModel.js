@@ -1,7 +1,8 @@
 class ChatsModel {
-  constructor(createdBy, ids) {
+  constructor(createdBy, createdAt, chatMembers) {
     this.createdBy = createdBy;
-    this.ids = ids;
+    this.createdAt = createdAt;
+    this.chatMembers = chatMembers;
   }
 }
 export default ChatsModel;

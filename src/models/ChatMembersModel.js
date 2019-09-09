@@ -1,8 +1,8 @@
-class DirectMessageMembersModel {
+class ChatMembersModel {
   constructor(chatId, members) {
     this.chatId = chatId;
     this.members = members;
   }
 }
 
-export default DirectMessageMembersModel;
+export default ChatMembersModel;

@@ -10,15 +10,15 @@ class ChatsDao {
     return rows;
   }
   async insertIntoChat(createdById, currentDate) {
-    const [rows] = await DB.query(QueryConstants.INSERT_CHAT_CREATION, [createdById, currentDate])
+    const [rows] = await DB.query(QueryConstants.INSERT_CHAT, [createdById, currentDate])
       .catch(err => {
         throw err;
       });
     return rows.insertId;
   }
 
-  async insertIntoChatMembersMapping(members) {
-    const [rows] = await DB.query(QueryConstants.INSERT_CHAT_MEMBERS_MAPPING, [members])
+  async insertIntoChatMembers(members) {
+    const [rows] = await DB.query(QueryConstants.INSERT_CHAT_MEMBERS, [members])
       .catch(err => {
         console.log(err);
         throw err;
@@ -27,8 +27,31 @@ class ChatsDao {
   }
 
   async getChatsAssociatedWithUser(id) {
-    console.log(QueryConstants.FIND_CHATS_ASSOCIATED_USER);
     const [rows] = await DB.query(QueryConstants.FIND_CHATS_ASSOCIATED_USER, [id, id])
+      .catch(err => {
+        throw err;
+      });
+    return rows;
+  }
+
+  async getChatForUser(id, chatId) {
+    const [rows] = await DB.query(QueryConstants.FIND_CHAT_FOR_USER, [id, chatId])
+      .catch(err => {
+        throw err;
+      });
+    return rows;
+  }
+
+  async getChatMessages(chatId) {
+    const [rows] = await DB.query(QueryConstants.FIND_CHAT_MESSAGES, [chatId])
+      .catch(err => {
+        throw err;
+      });
+    return rows;
+  }
+
+  async getChatMembers(id, chatId) {
+    const [rows] = await DB.query(QueryConstants.FIND_CHAT_MEMBERS, [chatId, id])
       .catch(err => {
         throw err;
       });

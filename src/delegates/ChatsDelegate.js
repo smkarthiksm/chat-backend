@@ -1,35 +1,37 @@
 import moment from 'moment';
 
 import ChatsDao from '../daos/ChatsDao';
-import DirectMessageMembersModel from '../models/DirectMessageMembersModel';
+import ChatMembersModel from '../models/ChatMembersModel';
 import ExceptionHandler from '../exceptions/ExceptionHandler';
+import ChatMessageModel from '../models/ChatMessageModel';
 import UserModel from '../models/UserModel';
+
 class ChatsDelegate {
-  async createNewDirectMessage(chatsModel) {
+  async createNewDirectMessage(id, memberIds) {
     try {
       const chatsDao = new ChatsDao();
-      chatsModel.ids.map((elem, index) => {
-        if (elem === chatsModel.createdBy) {
-          chatsModel.ids.splice(index, 1);
+      memberIds.map((elem, index) => {
+        if (elem === id) {
+          memberIds.splice(index, 1);
         }
       });
-      chatsModel.ids.push(chatsModel.createdBy);
-      let response = await chatsDao.getGroupsForUser(chatsModel.ids);
+      memberIds.push(id);
+      let response = await chatsDao.getGroupsForUser(memberIds);
       let chatId;
       if (response.length == 0) {
         const currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
-        chatId = await chatsDao.insertIntoChat(chatsModel.createdBy, currentDate);
+        chatId = await chatsDao.insertIntoChat(id, currentDate);
         if (chatId) {
-          const chatMembersMappingModelArray = new ChatsDelegate().generateArrayForInsert(chatId, chatsModel);
-          await chatsDao.insertIntoChatMembersMapping(chatMembersMappingModelArray);
+          const chatMembersModelArray = new ChatsDelegate().generateArrayForInsert(chatId, memberIds);
+          await chatsDao.insertIntoChatMembers(chatMembersModelArray);
           response = chatId;
         }
       }
       else {
-        chatId = response[0].fk_chat_chatMembersMapping;
+        chatId = response[0].fk_chat_chatMembers;
       }
 
-      return new DirectMessageMembersModel(chatId);
+      return new ChatMembersModel(chatId);
     }
     catch (err) {
       console.log(err);
@@ -39,11 +41,11 @@ class ChatsDelegate {
   }
 
   generateArrayForInsert(chatId, chatsModel) {
-    const chatMembersMappingModelArray = [];
+    const chatMembersModelArray = [];
     chatsModel.ids.forEach(element => {
-      chatMembersMappingModelArray.push([chatId, element]);
+      chatMembersModelArray.push([chatId, element]);
     });
-    return chatMembersMappingModelArray;
+    return chatMembersModelArray;
   }
 
   async getGroupsForUser(ids) {
@@ -61,20 +63,42 @@ class ChatsDelegate {
       const response = await new ChatsDao().getChatsAssociatedWithUser(id);
       let chatId = 0;
       let members = [];
-      const directMessageMembersModelList = [];
+      const ChatMembersModelList = [];
       response.forEach((element, index) => {
-        if (element.fk_chat_chatMembersMapping != chatId && chatId != 0) {
-          directMessageMembersModelList.push(new DirectMessageMembersModel(chatId, members));
-          chatId = element.fk_chat_chatMembersMapping;
+        if (element.fk_chat_chatMembers != chatId && chatId != 0) {
+          ChatMembersModelList.push(new ChatMembersModel(chatId, members));
+          chatId = element.fk_chat_chatMembers;
           members = [];
         }
-        chatId = element.fk_chat_chatMembersMapping;
+        chatId = element.fk_chat_chatMembers;
         members.push(new UserModel(element.id, element.firstName, element.lastName, element.email));
         if (index === response.length - 1) {
-          directMessageMembersModelList.push(new DirectMessageMembersModel(chatId, members));
+          ChatMembersModelList.push(new ChatMembersModel(chatId, members));
         }
       });
-      return directMessageMembersModelList;
+      return ChatMembersModelList;
+    }
+    catch (err) {
+      throw new ExceptionHandler(err);
+    }
+  }
+  async getChatMessages(id, chatId) {
+    try {
+      let isChatExists = await new ChatsDao().getChatForUser(id, chatId);
+      const response = {};
+      if (isChatExists.length > 0) {
+        const chatMessages = await new ChatsDao().getChatMessages(chatId);
+        const chatMembers = await new ChatsDao().getChatMembers(id, chatId);
+        let chatMessageModel = [];
+        chatMessages.forEach(element => {
+          let userModel = new UserModel(element.userId, element.firstName, element.lastName, element.email, element.phoneNumber);
+          chatMessageModel.push(new ChatMessageModel(element.id, element.message, element.createdAt, userModel));
+        });
+        
+        response.chatMembers = chatMembers;
+        response.messages = chatMessages;
+      }
+      return response;
     }
     catch (err) {
       throw new ExceptionHandler(err);

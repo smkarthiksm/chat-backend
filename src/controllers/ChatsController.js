@@ -1,13 +1,11 @@
 import ChatsDelegate from '../delegates/ChatsDelegate';
-import ChatsModel from '../models/ChatsModel';
 import * as JWTUtility from '../utilities/JWTUtility';
 class ChatsController {
 
   async createNewDirectMessage(req, res, next) {
     try {
-      const payload = JWTUtility.getJWTPayload(req);
-      const chatsModel = new ChatsModel(payload.id, req.body.ids);
-      return res.send(await new ChatsDelegate().createNewDirectMessage(chatsModel));
+      const JWTpayload = JWTUtility.getJWTPayload(req);
+      return res.send(await new ChatsDelegate().createNewDirectMessage(JWTpayload.id, req.body.ids));
     }
     catch (err) {
       next(err);
@@ -16,8 +14,19 @@ class ChatsController {
 
   async getChatsAssociatedWithUser(req, res, next) {
     try {
-      const payload = JWTUtility.getJWTPayload(req);
-      return res.send(await new ChatsDelegate().getChatsAssociatedWithUser(payload.id));
+      const JWTpayload = JWTUtility.getJWTPayload(req);
+      return res.send(await new ChatsDelegate().getChatsAssociatedWithUser(JWTpayload.id));
+    }
+    catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
+
+  async getChatMessages(req, res, next) {
+    try {
+      const JWTpayload = JWTUtility.getJWTPayload(req);
+      return res.send(await new ChatsDelegate().getChatMessages(JWTpayload.id, req.query.chatId));
     }
     catch (err) {
       console.log(err);
