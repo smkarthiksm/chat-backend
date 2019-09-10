@@ -7,6 +7,7 @@ import ChatMessageModel from '../models/ChatMessageModel';
 import UserModel from '../models/UserModel';
 
 class ChatsDelegate {
+
   async createNewDirectMessage(id, memberIds) {
     try {
       const chatsDao = new ChatsDao();
@@ -34,8 +35,6 @@ class ChatsDelegate {
       return new ChatMembersModel(chatId);
     }
     catch (err) {
-      console.log(err);
-
       throw new ExceptionHandler(err);
     }
   }
@@ -94,11 +93,27 @@ class ChatsDelegate {
           let userModel = new UserModel(element.userId, element.firstName, element.lastName, element.email, element.phoneNumber);
           chatMessageModel.push(new ChatMessageModel(element.id, element.message, element.createdAt, userModel));
         });
-        
+
         response.chatMembers = chatMembers;
         response.messages = chatMessages;
       }
       return response;
+    }
+    catch (err) {
+      throw new ExceptionHandler(err);
+    }
+  }
+
+  async insertNewMessage(userId, chatBody) {
+    try {
+      console.log(userId);
+
+      let isChatExists = await new ChatsDao().getChatForUser(userId, chatBody.chatId);
+      if (isChatExists.length > 0) {
+        const currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
+        const response = await new ChatsDao().insertNewMessage(userId, chatBody, currentDate);
+        return response;
+      }
     }
     catch (err) {
       throw new ExceptionHandler(err);

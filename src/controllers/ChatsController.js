@@ -33,5 +33,17 @@ class ChatsController {
       next(err);
     }
   }
+
+  async insertNewMessage(req, res, next) {
+    try {
+      const JWTpayload = JWTUtility.getJWTPayload(req);
+      console.log(req.body);
+      
+      return res.send(await new ChatsDelegate().insertNewMessage(JWTpayload.id, req.body));
+    }
+    catch (err) {
+      next(err);
+    }
+  }
 }
 export default ChatsController;

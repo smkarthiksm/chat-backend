@@ -43,10 +43,15 @@ class UserManagementDelegate {
       const userModel = new UserModel();
       userModel.email = body.email;
       const response = await new UserManagementDao().login(userModel);
-      userModel.id = response[0].id;      
+      userModel.id = response[0].id;
       if (response.length > 0) {
         if (await Utility.comparePasswordHash(body.password, response[0].password)) {
-          return JWTUtility.generateJWT({ "id": userModel.id });
+          let JWTPayload = {
+            "id": userModel.id,
+            "firstName": response[0].firstName,
+            "lastName": response[0].lastName,
+          };
+          return JWTUtility.generateJWT(JWTPayload);
         }
         else {
           throw ({ message: ApplicationConstants.ACCOUNT_NOT_PRESENT, status: ApplicationConstants.NOT_FOUND });

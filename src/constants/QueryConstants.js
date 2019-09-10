@@ -48,3 +48,7 @@ T2.${DatabaseConstants.EMAIL}, T2.${DatabaseConstants.PHONE_NUMBER}
 FROM ${DatabaseConstants.CHAT_MEMBERS_TABLE} T1 JOIN ${DatabaseConstants.USER_TABLE} T2
 ON T1.${DatabaseConstants.FK_USER_CHAT_MEMBERS} = T2.${DatabaseConstants.PK_ID}
 WHERE T1.${DatabaseConstants.FK_CHAT_CHAT_MEMBERS} = ? AND T2.id!=?`;
+
+export const INSERT_NEW_MESSAGE = `INSERT INTO ${DatabaseConstants.CHAT_MESSAGE_TABLE}
+(${DatabaseConstants.FK_CHAT_CHATMESSAGE},${DatabaseConstants.FK_USER_CHATMESSAGE},
+  ${DatabaseConstants.MESSAGE},${DatabaseConstants.CREATED_AT},${DatabaseConstants.ISACTIVE}) VALUES(?,?,?,?,?)`;

@@ -57,5 +57,12 @@ class ChatsDao {
       });
     return rows;
   }
+  async insertNewMessage(userId, chatBody, currentDate) {
+    const [rows] = await DB.query(QueryConstants.INSERT_NEW_MESSAGE, [chatBody.chatId, userId, chatBody.message, currentDate, 1])
+      .catch(err => {
+        throw err;
+      });
+    return rows;
+  }
 }
 export default ChatsDao;
